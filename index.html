@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="sk">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" type="text/css" href="style.css">
+
+      <title>ebanking</title>
+   </head>
+   <body>
+     <h1>e-banking app</h1>
+     <div class="container">
+
+     <div class="col1 box">
+       <p>Ján Hraško</p>
+       <p>SK11 0000 0000 9999 0000 9999</p>
+       <span class="big">3 283 €</span>
+
+         <button type="button" class="blue" name="button" onclick="location.href='tranzakcia.html'">Nová tranzakcia</button>
+
+     </div>
+     <div class="col2 box">
+       <p>Historia</p>
+     </div>
+     </div>
+<br>
+
+    <div class="form box">
+    <div  class="crypt">Encrypt file</div>
+    <p>File to upload: </p>
+    <input type="file" id="file" name="file" />
+    <br>
+    <button type="button" name="encryptB" onclick="encFun();">Encrypt file</button>
+
+<hr>
+
+    <div  class="crypt">Decrypt file</div>
+    <p>File to upload: </p>
+    <input type="file" id="fileD" name="file" />
+    <br>
+    <p>Key: </p>
+    <input type="text" id="key" name="key" />
+    <br>
+    <button type="button" name="decryptB" onclick="decFun();">Decrypt file</button>
+    <br>
+    </div>
+    </div>
+
+   </body>
+   <script type="text/javascript">
+
+   function encFun(){
+    const file = document.getElementById("file").files[0];
+    let formData = new FormData();
+    formData.append("file", file);
+
+   fetch("http://localhost:8082/encrypt", {method: "post", body: formData })
+  .then((res) => { return res.blob(); })
+  .then((data) => {
+   var a = document.createElement("a");
+   a.href = window.URL.createObjectURL(data);
+   a.download = "file";
+   a.click();
+ });
+   }
+
+   function decFun(){
+     const key = document.getElementById("key").value;
+     const file = document.getElementById("fileD").files[0];
+     let formData = new FormData();
+     formData.append("file", file);
+     formData.append("key", key);
+
+     fetch("http://localhost:8082/decrypt", {method: "post", body: formData })
+     .then((res) => { return res.blob(); })
+     .then((data) => {
+     var a = document.createElement("a");
+     a.href = window.URL.createObjectURL(data);
+     a.download = "file";
+     a.click();
+     });
+   }
+
+   </script>
+</html>
