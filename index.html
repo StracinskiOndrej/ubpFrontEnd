@@ -31,7 +31,8 @@
     <input type="file" id="file" name="file" />
     <br>
     <button type="button" name="encryptB" onclick="encFun();">Encrypt file</button>
-
+	<br>
+	<button type="button" name="GetKey" onclick="getKey();">Get Key</button>
 <hr>
 
     <div  class="crypt">Decrypt file</div>
@@ -39,7 +40,7 @@
     <input type="file" id="fileD" name="file" />
     <br>
     <p>Key: </p>
-    <input type="text" id="key" name="key" />
+    <input type="file" id="key" name="key" />
     <br>
     <button type="button" name="decryptB" onclick="decFun();">Decrypt file</button>
     <br>
@@ -54,7 +55,18 @@
     let formData = new FormData();
     formData.append("file", file);
 
-   fetch("http://localhost:8082/encrypt", {method: "post", body: formData })
+   fetch("http://147.175.121.147:8082/encrypt", {method: "post", body: formData })
+  .then((res) => { return res.blob(); })
+  .then((data) => {
+   var a = document.createElement("a");
+   a.href = window.URL.createObjectURL(data);
+   a.download = "file";
+   a.click();
+ });
+   }
+    function getKey(){
+
+   fetch("http://147.175.121.147:8082/key", {method: "get"})
   .then((res) => { return res.blob(); })
   .then((data) => {
    var a = document.createElement("a");
@@ -65,13 +77,13 @@
    }
 
    function decFun(){
-     const key = document.getElementById("key").value;
+     const key = document.getElementById("key").files[0];
      const file = document.getElementById("fileD").files[0];
      let formData = new FormData();
      formData.append("file", file);
      formData.append("key", key);
 
-     fetch("http://localhost:8082/decrypt", {method: "post", body: formData })
+     fetch("http://147.175.121.147:8082/decrypt", {method: "post", body: formData })
      .then((res) => { return res.blob(); })
      .then((data) => {
      var a = document.createElement("a");
