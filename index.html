@@ -73,7 +73,7 @@
            let searchString = document.getElementById("searchForReciever").value;
            let selectReciever = document.getElementById("selectReciever");
            selectReciever.innerHTML = "";
-           fetch("http://localhost:8082/searchForRecievers/"+searchString, {method: "get"})
+           fetch("http://147.175.121.147:8082/searchForRecievers/"+searchString, {method: "get"})
                .then((response)=>response.json())
                .then((data)=>{
                    data.forEach(user => {selectReciever.add(new Option(user,user))} )
@@ -86,7 +86,7 @@
            let massages = document.getElementById("massages");
            massages.innerHTML = "";
            let duplicates = [];
-           fetch("http://localhost:8082/checkMassages/"+loggedInUser, {method: "get"})
+           fetch("http://147.175.121.147:8082/checkMassages/"+loggedInUser, {method: "get"})
                .then((response)=>response.json())
                .then((data)=>{
                    console.log(data)
@@ -109,7 +109,7 @@
 
                        p.addEventListener("click", ()=>{
                            let idOfSentFile = p.getAttribute("name");
-                           fetch("http://localhost:8082/recieveFile/"+idOfSentFile, {method: "put"})
+                           fetch("http://147.175.121.147:8082/recieveFile/"+idOfSentFile, {method: "put"})
                                .then((res) => {
                                    return res.blob(); })
                                .then((data) => {
@@ -131,7 +131,7 @@
            formData.append("sender", loggedInUser);
            formData.append("reciever", reciever)
 
-           fetch("http://localhost:8082/sendFile", {method: "post", body: formData })
+           fetch("http://147.175.121.147:8082/sendFile", {method: "post", body: formData })
                .then((res) => { return res.text(); })
                .then((text) => {
                    console.log(text)
