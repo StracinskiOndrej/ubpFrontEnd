@@ -4,10 +4,8 @@
 }
 body{
     background-color: #D0F4FC;
-}
-
-.box{
-    border: 1px black solid;
+    overflow:scroll;
+    overflow-x:hidden;
 }
 .container{
     background-color: white;
@@ -19,11 +17,17 @@ body{
     background-color: white;
     width: 90%;
     margin: auto;
+    padding: 1.5rem;
+}
+.form input, .form p{
+    margin-left: 0;
 }
 .col1{
     width: 70%;
     background-color: white;
-
+    padding: 1.5rem;
+    border-radius: 5px;
+    box-shadow: 0.25rem .25rem rgba(0,0,0,.075)!important;
 }
 .col2{
     width: 20%;
@@ -32,6 +36,12 @@ body{
 .col3{
     width: 10%;
     background-color: white;
+}
+.box{
+    border: 1px black solid;
+}
+.noRadius{
+    border-radius: 0;
 }
 h1{
     text-align: center;
@@ -48,12 +58,10 @@ p{
 button{
     background-color: #09D1FD;
     border: gray solid 1px;
-    margin: 10px;
+    margin: auto auto;
 }
 .blue{
-    margin-left: 160px;
-    margin-top:  50px;
-    margin-bottom:  50px;
+    margin: 20px auto;
     text-align: center;
     cursor:pointer;
     background-color: #09D1FD;
@@ -62,7 +70,12 @@ button{
     border: gray solid 1px;
 }
 input{
-    margin-left: 30px;
+    margin-top: 1rem;
+    margin-left: 10px;
+}
+label {
+    width: 70px;
+    display: inline-block;
 }
 .crypt{
     font-size: 25px;

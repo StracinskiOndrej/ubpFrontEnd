@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="../../../../../../../front/style.css">
+    <link rel="icon" type="image/x-icon" href="../upload-dir/fei.png">
+    <link rel="stylesheet" type="text/css" href="style.css">
 
     <title>ebanking</title>
 </head>
@@ -49,7 +50,7 @@
             .then((response) => response.text())
             .then((text) => {
                 if(text === "User created"){
-                    window.location.href = "../../../../../../../front/login.html";
+                    window.location.href = "login.html";
                 }
                 if(text.includes("ILLEGAL_USERNAME")){
                     m.innerHTML += "Password nemoze obsahovat username.<br>";
