@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="sk">
    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" type="text/css" href="style.css">
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       <link rel="icon" type="image/x-icon" href="../upload-dir/fei.png">
+       <link rel="stylesheet" type="text/css" href="style.css">
 
       <title>ebanking</title>
    </head>
@@ -11,18 +12,20 @@
     <h1>e-banking app</h1>
     <div class="container">
 
-    <div class="col1 box">
-      <p id="loggedinUser">xpop</p>
+    <div class="col1 box noRadius">
+        <div>Name: </div> <br><div id="name1">name</div> <br>
+            <div>Lastname: </div> <br> <div id="lastname1">lastname</div> <br>
+                <div >Username: </div>  <br><div id="loggedinUser">username</div> <br>
       <p>SK11 0000 0000 9999 0000 9999</p>
-      <span class="big">3 283 €</span>
+        <span class="big" id="money1">3 283 €</span>
 
     </div>
-    <div class="col2 box">
-      <p>Historia</p>
-    </div>
-    <div  class="col3 box">
-      <button type="button" style="margin-left: auto; margin-right:auto; width: auto; font-size: 20px;" class="blue" name="button" onclick="location.href='login.html'">Log out!</button>
-    </div>
+        <div class="col2 box">
+          <p>Historia</p>
+        </div>
+        <div  class="col3 box">
+          <button type="button" style="margin-top: 0; width: 100%; font-size: 20px;" class="blue" name="button" onclick="logout()">Log out!</button>
+        </div>
     </div>
 <br>
 
@@ -38,101 +41,112 @@
 
     </div>
     <br>
-
-
+    <div style="display: none" id="hidden-name">
+    </div>
+    <div style="display: none" id="hidden-cookie">
+    </div>
     <div class="form box">
-    <div  class="crypt">Send File</div>
-    <p>File to send: </p>
-    <input type="file" id="file" name="file" />
-    <br>
+        <div  class="crypt">Send File</div>
+        <p>File to send: </p>
+        <input type="file" id="file" name="file" />
+        <br>
         <label for="searchForReciever">Vyhladajte usera ktoremu poslete file</label>
         <input type="text" id="searchForReciever" autocomplete="off">
         <br>
-        <select name="receivers" id="selectReciever"></select>
+        <label for="selectReciever"></label><select name="receivers" id="selectReciever"></select>
         <br>
-    <button type="button" name="encryptB" onclick="encFun();">Encrypt file</button>
+        <button type="button" name="encryptB" onclick="encFun();">Encrypt file</button>
 
-<hr>
+        <hr>
 
-    <div  class="crypt">Massages</div>
-    <button type="button" id="checkMassages">Check Massages</button>
-    <div id="massages"></div>
-    <br>
+        <div  class="crypt">Massages</div>
+        <button type="button" id="checkMassages">Check Massages</button>
+        <div id="massages"></div>
+        <br>
     </div>
     </div>
 
    </body>
    <script type="text/javascript">
 
-    document.getElementById("searchForReciever").addEventListener("input", ()=>{
-        let searchString = document.getElementById("searchForReciever").value;
-        let selectReciever = document.getElementById("selectReciever");
-        selectReciever.innerHTML = "";
-        fetch("http://localhost:8082/searchForRecievers/"+searchString, {method: "get"})
-            .then((response)=>response.json())
-            .then((data)=>{
-                data.forEach(user => {selectReciever.add(new Option(user,user))} )
-            })
+       document.getElementById("searchForReciever").addEventListener("input", ()=>{
+           let searchString = document.getElementById("searchForReciever").value;
+           let selectReciever = document.getElementById("selectReciever");
+           selectReciever.innerHTML = "";
+           fetch("http://147.175.121.147:8082/searchForRecievers/"+searchString, {method: "get"})
+               .then((response)=>response.json())
+               .then((data)=>{
+                   data.forEach(user => {selectReciever.add(new Option(user,user))} )
+               })
 
-    })
+       })
 
-    document.getElementById("checkMassages").addEventListener("click", ()=>{
-        let loggedInUser = document.getElementById("loggedinUser").innerHTML;
-        let massages = document.getElementById("massages");
-        massages.innerHTML = "";
-        let duplicates = [];
-        fetch("http://localhost:8082/checkMassages/"+loggedInUser, {method: "get"})
-            .then((response)=>response.json())
-            .then((data)=>{
-                console.log(data)
-                for(var key in data){
-                    let includes = false;
-                    duplicates.forEach(element => {
-                        if(element===data[key]){
-                            includes=true;
-                        }
-                    })
-                    if(includes === true){
-                        continue;
-                    }
-                    p = document.createElement("p");
-                    p.innerHTML = data[key];
-                    p.setAttribute("name", key )
-                    massages.append(p);
-                    duplicates.push(data[key]);
-
-
-                    p.addEventListener("click", ()=>{
-                        let idOfSentFile = p.getAttribute("name");
-                        fetch("http://localhost:8082/recieveFile/"+idOfSentFile, {method: "put"})
-                            .then((res) => {
-                                return res.blob(); })
-                            .then((data) => {
-                                var a = document.createElement("a");
-                                a.href = window.URL.createObjectURL(data);
-                                a.download = "dec_file.txt";
-                                a.click();
-                            });
-                    })
-                }
-            })
-    })
+       document.getElementById("checkMassages").addEventListener("click", ()=>{
+           let loggedInUser = document.getElementById("loggedinUser").innerHTML;
+           let massages = document.getElementById("massages");
+           massages.innerHTML = "";
+           let duplicates = [];
+           fetch("http://147.175.121.147:8082/checkMassages/"+loggedInUser, {method: "get"})
+               .then((response)=>response.json())
+               .then((data)=>{
+                   console.log(data)
+                   for(var key in data){
+                       let includes = false;
+                       duplicates.forEach(element => {
+                           if(element===data[key]){
+                               includes=true;
+                           }
+                       })
+                       if(includes === true){
+                           continue;
+                       }
+                       p = document.createElement("p");
+                       p.innerHTML = data[key];
+                       p.setAttribute("name", key )
+                       massages.append(p);
+                       duplicates.push(data[key]);
 
 
-   function encFun(){
-    const file = document.getElementById("file").files[0];
-    let loggedInUser = document.getElementById("loggedinUser").innerHTML;
-    let reciever = document.getElementById("selectReciever").value;
-    let formData = new FormData();
-    formData.append("file", file);
-    formData.append("sender", loggedInUser);
-    formData.append("reciever", reciever)
+                       p.addEventListener("click", ()=>{
+                           let idOfSentFile = p.getAttribute("name");
+                           fetch("http://147.175.121.147:8082/recieveFile/"+idOfSentFile, {method: "put"})
+                               .then((res) => {
+                                   return res.blob(); })
+                               .then((data) => {
+                                   var a = document.createElement("a");
+                                   a.href = window.URL.createObjectURL(data);
+                                   a.download = "dec_file.txt";
+                                   a.click();
+                               });
+                       })
+                   }
+               })
+       })
+       function encFun(){
+           const file = document.getElementById("file").files[0];
+           let loggedInUser = document.getElementById("loggedinUser").innerHTML;
+           let reciever = document.getElementById("selectReciever").value;
+           let formData = new FormData();
+           formData.append("file", file);
+           formData.append("sender", loggedInUser);
+           formData.append("reciever", reciever)
 
-   fetch("http://localhost:8082/sendFile", {method: "post", body: formData })
-  .then((res) => { return res.text(); })
-  .then((text) => {
-      console.log(text)
-   });
+           fetch("http://147.175.121.147:8082/sendFile", {method: "post", body: formData })
+               .then((res) => { return res.text(); })
+               .then((text) => {
+                   console.log(text)
+               });
+       }
+    function getKey(){
+
+   fetch("http://147.175.121.147:8082/key", {method: "get"})
+  .then((res) => { return res.blob(); })
+  .then((data) => {
+   var a = document.createElement("a");
+   a.href = window.URL.createObjectURL(data);
+   a.download = "key.txt";
+   a.click();
+ });
    }
 
    function decFun(){
@@ -157,7 +171,7 @@
    function send(){
        const receiver = document.getElementById("user").value;
        const amount = document.getElementById("amount").value;
-       let sender = "ivona2";
+       let sender = user;
        let m = document.getElementById("m");
 
        let formData = new FormData();
@@ -171,14 +185,28 @@
        fetch("http://147.175.121.147:8082/send", {method: "post", body: formData })
            .then((response) => response.text())
            .then((text) => {
-             //  m.innerHTML = text;
+              m.innerHTML = text;
            });
 
    }}
 
+   // Logout
+   function logout(){
+       let formData = new FormData()
+       formData.append("id",user)
+       // You have to delete cookie in the path where the cookie was created (for us it's login.html)
+       document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path='./login.html';";
+       document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path='./login.html';";
+       fetch("http://147.175.121.147:8082/logout", {method: "post", body: formData })
+           .then((response) => response.text())
+           .then((text) => {
+               console.log(text)
+               window.location.href = "./"+text;
+           });
+   }
    // The cookie prevents user that is logged in from viewing the page
-   function getCookie() {
-       let name = "loggedIn=";
+   function getCookie(cookieName) {
+       let name = cookieName + "=";
        let decodedCookie = decodeURIComponent(document.cookie);
        let ca = decodedCookie.split(';');
        for(let i = 0; i <ca.length; i++) {
@@ -192,11 +220,50 @@
        }
        return "";
    }
-
-   if(getCookie() !== "True"){
-       // Simulate an HTTP redirect:
-       // window.location.href = "./login.html";
-       console.log(getCookie())
+   function checkCookie(){
+       getCookieFetch().then(response=>{
+           console.log(response)
+           if(getCookie("token") !== response){
+               window.location.href = "./login.html";
+           }
+       })
    }
+   const getCookieFetch= async () => {
+       let formData = new FormData();
+       formData.append("id", user);
+       const response = await  fetch("http://147.175.121.147:8082/cookie", {method: "post",body:formData})
+       return await response.text();
+   }
+
+   if(getCookie("loggedIn") !== "True")
+       window.location.href = "./login.html";
+
+
+   function getInfo(){
+       let formData = new FormData();
+       formData.append("user", user);
+       fetch("http://147.175.121.147:8082/name", {method: "post", body: formData })
+           .then((response) => response.text())
+           .then((text) => {
+              document.getElementById("name1").innerHTML = text;
+           });
+       fetch("http://147.175.121.147:8082/lastname", {method: "post", body: formData })
+           .then((response) => response.text())
+           .then((text) => {
+               document.getElementById("lastname1").innerHTML = text;
+           });
+       fetch("http://147.175.121.147:8082/money", {method: "post", body: formData })
+           .then((response) => response.text())
+           .then((text) => {
+               document.getElementById("money1").innerHTML = text;
+           });
+
+   }
+   let user = getCookie("username")
+   checkCookie()
+   getInfo();
+   document.getElementById("loggedinUser").innerHTML = user;
+
+
    </script>
 </html>

@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="sk">
    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" type="text/css" href="style.css">
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       <link rel="icon" type="image/x-icon" href="../upload-dir/fei.png">
+       <link rel="stylesheet" type="text/css" href="style.css">
 
       <title>ebanking</title>
    </head>
@@ -46,13 +47,18 @@
                m.innerHTML = text;
                //text2 = text;
                if(text === "OK"){
-                   console.log("redirect")
-                   // window.location.href = "./index.html";
+                   let formData = new FormData();
+                   formData.append("id", dataUname);
+                   fetch("http://147.175.121.147:8082/cookie", {method: "post", body: formData })
+                       .then((response) => response.text())
+                       .then((text) => {
+                           document.cookie = "token=" + text;
+                           document.cookie = "username=" + dataUname;
+                       });
+                   document.cookie = "loggedIn=True"
+                   window.location.href = "./index.html";
                }
-
            });
-
-
    }}
 
    </script>
