@@ -46,7 +46,7 @@
     <input type="file" id="file" name="file" />
     <br>
         <label for="searchForReciever">Vyhladajte usera ktoremu poslete file</label>
-        <input type="text" id="searchForReciever">
+        <input type="text" id="searchForReciever" autocomplete="off">
         <br>
         <select name="receivers" id="selectReciever"></select>
         <br>
@@ -80,15 +80,27 @@
         let loggedInUser = document.getElementById("loggedinUser").innerHTML;
         let massages = document.getElementById("massages");
         massages.innerHTML = "";
+        let duplicates = [];
         fetch("http://localhost:8082/checkMassages/"+loggedInUser, {method: "get"})
             .then((response)=>response.json())
             .then((data)=>{
-                data.forEach(masssage => {
-                    console.log(masssage);
+                console.log(data)
+                for(var key in data){
+                    let includes = false;
+                    duplicates.forEach(element => {
+                        if(element===data[key]){
+                            includes=true;
+                        }
+                    })
+                    if(includes === true){
+                        continue;
+                    }
                     p = document.createElement("p");
-                    p.innerHTML = masssage.fileName;
-                    p.setAttribute("name", masssage.id )
+                    p.innerHTML = data[key];
+                    p.setAttribute("name", key )
                     massages.append(p);
+                    duplicates.push(data[key]);
+
 
                     p.addEventListener("click", ()=>{
                         let idOfSentFile = p.getAttribute("name");
@@ -101,15 +113,9 @@
                                 a.download = "dec_file.txt";
                                 a.click();
                             });
-
-
                     })
-
-
-                } )
+                }
             })
-
-
     })
 
 
