@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="sk">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../../../../../../../front/style.css">
+
+    <title>ebanking</title>
+</head>
+<body>
+
+<h1>Register to eBanking </h1>
+<div class="container" style="width: 30%;">
+    <div class="col1 box" style="width: 100%;">
+        <div id="inputs">
+            <label for="uname">Username:</label>
+            <input type="text" id="uname" name="uname" required><br><br>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="lname">Lastname:</label>
+            <input type="text" id="lname" name="lname" required><br><br>
+            <label for="pass">Password:</label>
+            <input type="password" id="pass" name="pass" required><br><br>
+        </div>
+        <button type="button" class="blue" name="button" onclick="regFun();">Register!</button>
+        <button type="button" class="blue" name="button" onclick="location.href='login.html'">Already have an account?</button>
+        <div id="m"> </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function regFun(){
+        const dataUname = document.getElementById("uname").value;
+        const dataName = document.getElementById("name").value;
+        const dataLname = document.getElementById("lname").value;
+        const dataPass = document.getElementById("pass").value;
+        let formData = new FormData();
+        formData.append("userName", dataUname);
+        formData.append("name", dataName);
+        formData.append("lastName", dataLname);
+        formData.append("password", dataPass);
+        let m = document.getElementById("m");
+        if(dataUname === "" || dataPass === ""){
+            m.innerHTML = "Field can't be empty!"
+        }
+        else{
+        fetch("http://147.175.121.147:8082/register", {method: "post", body: formData })
+            .then((response) => response.text())
+            .then((text) => {
+                if(text === "User created"){
+                    window.location.href = "../../../../../../../front/login.html";
+                }
+                if(text.includes("ILLEGAL_USERNAME")){
+                    m.innerHTML += "Password nemoze obsahovat username.<br>";
+                }
+                if(text.includes("INSUFFICIENT_LOWERCASE")){
+                    m.innerHTML += "Password musi obsahovat aspon jedno male pismeno.<br>";
+                }
+                if(text.includes("INSUFFICIENT_UPPERCASE")){
+                    m.innerHTML += "Password musi obsahovat aspon jedno velke pismeno.<br>";
+                }
+                if(text.includes("TOO_SHORT")){
+                    m.innerHTML += "Password musi mat aspon 8 charakterov.<br>";
+                }
+                if(text.includes("ILLEGAL_WORD")){
+                    m.innerHTML += "Password je prilis casty.<br>";
+                }
+                if(text.includes("INSUFFICIENT_DIGIT")){
+                    m.innerHTML += "Password musi obsahovat aspon jedno cislo<br>";
+                }
+
+            });
+    }}
+
+</script>
+</body>
