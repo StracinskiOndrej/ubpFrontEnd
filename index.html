@@ -15,7 +15,7 @@
     <div class="col1 box noRadius">
         <div>Name: </div> <br><div id="name1">name</div> <br>
             <div>Lastname: </div> <br> <div id="lastname1">lastname</div> <br>
-                <div>Username: </div>  <br><div id="username1">username</div> <br>
+                <div >Username: </div>  <br><div id="loggedinUser">username</div> <br>
       <p>SK11 0000 0000 9999 0000 9999</p>
         <span class="big" id="money1">3 283 €</span>
 
@@ -262,7 +262,7 @@
    let user = getCookie("username")
    checkCookie()
    getInfo();
-   document.getElementById("username1").innerHTML = user;
+   document.getElementById("loggedinUser").innerHTML = user;
 
 
    </script>
