@@ -1,19 +1,19 @@
 *{
-  font-family: monospace;
+    font-family: monospace;
 
 }
 body{
-  background-color: #D0F4FC;
+    background-color: #D0F4FC;
 }
 
 .box{
-  border: 1px black solid;
+    border: 1px black solid;
 }
 .container{
-  background-color: white;
-  margin: auto;
-  display: flex;
-  width: 90%;
+    background-color: white;
+    margin: auto;
+    display: flex;
+    width: 90%;
 }
 .form{
     background-color: white;
@@ -21,49 +21,62 @@ body{
     margin: auto;
 }
 .col1{
- width: 70%;
-   background-color: white;
+    width: 70%;
+    background-color: white;
 
 }
 .col2{
- width: 30%;
-   background-color: white;
+    width: 20%;
+    background-color: white;
+}
+.col3{
+    width: 10%;
+    background-color: white;
 }
 h1{
-  text-align: center;
+    text-align: center;
 }
 .big{
-  font-size: 50px;
-  margin: 40px;
+    font-size: 50px;
+    margin: 40px;
     background-color: white;
 }
 p{
-  background-color: white;
-  margin: 10px;
+    background-color: white;
+    margin: 10px;
 }
 button{
-background-color: #09D1FD;
-  border: gray solid 1px;
-  margin: 10px;
+    background-color: #09D1FD;
+    border: gray solid 1px;
+    margin: 10px;
 }
 .blue{
-  margin-left: 160px;
-  margin-top:  50px;
-  margin-bottom:  50px;
-  text-align: center;
-  background-color: #09D1FD;
-  display: inline-block;
-  font-size: 30px;
-  border: gray solid 1px;
+    margin-left: 160px;
+    margin-top:  50px;
+    margin-bottom:  50px;
+    text-align: center;
+    cursor:pointer;
+    background-color: #09D1FD;
+    display: inline-block;
+    font-size: 30px;
+    border: gray solid 1px;
 }
 input{
-  margin-left: 30px;
+    margin-left: 30px;
 }
 .crypt{
-  font-size: 25px;
-  color: #09D1FD;
-  margin-left: 20px;
+    font-size: 25px;
+    color: #09D1FD;
+    margin-left: 20px;
 }
 #invisible{
-  display: none;
+    display: none;
+}
+#inputs{
+    margin-left: auto;
+    margin-right: auto;
+}
+#m{
+    margin: auto;
+    text-align: center;
 }

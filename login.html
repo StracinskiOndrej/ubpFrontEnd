@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="sk">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" type="text/css" href="style.css">
+
+      <title>ebanking</title>
+   </head>
+   <body>
+    <h1>Login to eBanking </h1>
+    <div class="container" style="width: 30%;">
+        <div class="col1 box" style="width: 100%;">
+            <div id="inputs">
+                <label for="uname">Username:</label>
+                <input type="text" id="uname" name="uname" required><br><br>
+                <label for="pass">Password:</label>
+                <input type="password" id="pass" name="pass" required><br><br>
+            </div>
+            <button type="button" class="blue" name="button" onclick="logFun();">Log in!</button>
+            <button type="button" class="blue" name="button" onclick="location.href='register.html'">Don't have an account?</button>
+            <div id="m"> </div>
+
+          </div>
+    </div>
+   </body>
+   <script type="text/javascript">
+
+   function logFun(){
+       let m = document.getElementById("m");
+       let text2 = "";
+    const dataUname = document.getElementById("uname").value;
+    const dataPass = document.getElementById("pass").value;
+    if(dataUname === "" || dataPass === ""){
+        m.innerHTML = "Field can't be empty!"
+    }
+    else{
+
+    let formData = new FormData();
+    formData.append("name", dataUname);
+    formData.append("password", dataPass);
+
+   fetch("http://147.175.121.147:8082/login", {method: "post", body: formData })
+       .then((response) => response.text())
+           .then((text) => {
+               m.innerHTML = text;
+               //text2 = text;
+               if(text === "OK"){
+                   console.log("redirect")
+                   // window.location.href = "./index.html";
+               }
+
+           });
+
+
+   }}
+
+   </script>
+</html>
