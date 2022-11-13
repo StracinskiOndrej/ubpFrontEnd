@@ -41,49 +41,102 @@
 
     </div>
     <br>
-
-
-    <div class="form box">
-    <div  class="crypt">Encrypt file</div>
-    <p>File to upload: </p>
-    <input type="file" id="file" name="file" />
-    <br>
-    <button type="button" name="encryptB" onclick="encFun();">Encrypt file</button>
-	<br>
-	<button type="button" name="GetKey" onclick="getKey();">Get Key</button>
-<hr>
-
-    <div  class="crypt">Decrypt file</div>
-    <p>File to upload: </p>
-    <input type="file" id="fileD" name="file" />
-    <br>
-    <p>Key: </p>
-    <input type="file" id="key" name="key" />
-    <br>
-    <button type="button" name="decryptB" onclick="decFun();">Decrypt file</button>
-    <br>
-    </div>
     <div style="display: none" id="hidden-name">
     </div>
     <div style="display: none" id="hidden-cookie">
     </div>
+    <div class="form box">
+        <div  class="crypt">Send File</div>
+        <p>File to send: </p>
+        <input type="file" id="file" name="file" />
+        <br>
+        <label for="searchForReciever">Vyhladajte usera ktoremu poslete file</label>
+        <input type="text" id="searchForReciever" autocomplete="off">
+        <br>
+        <label for="selectReciever"></label><select name="receivers" id="selectReciever"></select>
+        <br>
+        <button type="button" name="encryptB" onclick="encFun();">Encrypt file</button>
+
+        <hr>
+
+        <div  class="crypt">Massages</div>
+        <button type="button" id="checkMassages">Check Massages</button>
+        <div id="massages"></div>
+        <br>
+    </div>
+    </div>
+
    </body>
    <script type="text/javascript">
 
-   function encFun(){
-    const file = document.getElementById("file").files[0];
-    let formData = new FormData();
-    formData.append("file", file);
+       document.getElementById("searchForReciever").addEventListener("input", ()=>{
+           let searchString = document.getElementById("searchForReciever").value;
+           let selectReciever = document.getElementById("selectReciever");
+           selectReciever.innerHTML = "";
+           fetch("http://localhost:8082/searchForRecievers/"+searchString, {method: "get"})
+               .then((response)=>response.json())
+               .then((data)=>{
+                   data.forEach(user => {selectReciever.add(new Option(user,user))} )
+               })
 
-   fetch("http://147.175.121.147:8082/encrypt", {method: "post", body: formData })
-  .then((res) => { return res.blob(); })
-  .then((data) => {
-   var a = document.createElement("a");
-   a.href = window.URL.createObjectURL(data);
-   a.download = "enc_file.txt";
-   a.click();
- });
-   }
+       })
+
+       document.getElementById("checkMassages").addEventListener("click", ()=>{
+           let loggedInUser = document.getElementById("loggedinUser").innerHTML;
+           let massages = document.getElementById("massages");
+           massages.innerHTML = "";
+           let duplicates = [];
+           fetch("http://localhost:8082/checkMassages/"+loggedInUser, {method: "get"})
+               .then((response)=>response.json())
+               .then((data)=>{
+                   console.log(data)
+                   for(var key in data){
+                       let includes = false;
+                       duplicates.forEach(element => {
+                           if(element===data[key]){
+                               includes=true;
+                           }
+                       })
+                       if(includes === true){
+                           continue;
+                       }
+                       p = document.createElement("p");
+                       p.innerHTML = data[key];
+                       p.setAttribute("name", key )
+                       massages.append(p);
+                       duplicates.push(data[key]);
+
+
+                       p.addEventListener("click", ()=>{
+                           let idOfSentFile = p.getAttribute("name");
+                           fetch("http://localhost:8082/recieveFile/"+idOfSentFile, {method: "put"})
+                               .then((res) => {
+                                   return res.blob(); })
+                               .then((data) => {
+                                   var a = document.createElement("a");
+                                   a.href = window.URL.createObjectURL(data);
+                                   a.download = "dec_file.txt";
+                                   a.click();
+                               });
+                       })
+                   }
+               })
+       })
+       function encFun(){
+           const file = document.getElementById("file").files[0];
+           let loggedInUser = document.getElementById("loggedinUser").innerHTML;
+           let reciever = document.getElementById("selectReciever").value;
+           let formData = new FormData();
+           formData.append("file", file);
+           formData.append("sender", loggedInUser);
+           formData.append("reciever", reciever)
+
+           fetch("http://localhost:8082/sendFile", {method: "post", body: formData })
+               .then((res) => { return res.text(); })
+               .then((text) => {
+                   console.log(text)
+               });
+       }
     function getKey(){
 
    fetch("http://147.175.121.147:8082/key", {method: "get"})
