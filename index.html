@@ -8,40 +8,55 @@
       <title>ebanking</title>
    </head>
    <body>
-     <h1>e-banking app</h1>
-     <div class="container">
+    <h1>e-banking app</h1>
+    <div class="container">
 
-     <div class="col1 box">
-       <p>Ján Hraško</p>
-       <p>SK11 0000 0000 9999 0000 9999</p>
-       <span class="big">3 283 €</span>
+    <div class="col1 box">
+      <p id="loggedinUser">xpop</p>
+      <p>SK11 0000 0000 9999 0000 9999</p>
+      <span class="big">3 283 €</span>
 
-         <button type="button" class="blue" name="button" onclick="location.href='tranzakcia.html'">Nová tranzakcia</button>
-
-     </div>
-     <div class="col2 box">
-       <p>Historia</p>
-     </div>
-     </div>
+    </div>
+    <div class="col2 box">
+      <p>Historia</p>
+    </div>
+    <div  class="col3 box">
+      <button type="button" style="margin-left: auto; margin-right:auto; width: auto; font-size: 20px;" class="blue" name="button" onclick="location.href='login.html'">Log out!</button>
+    </div>
+    </div>
 <br>
 
     <div class="form box">
-    <div  class="crypt">Encrypt file</div>
-    <p>File to upload: </p>
+        <div class="crypt">Send money</div>
+        <br>
+        <label for="user">Send to user: </label>
+        <input type="text" id="user" name="user" required><br><br>
+        <label for="amount">Amount: </label>
+        <input type="number" id="amount" name="amount" required><br><br>
+            <button type="button" name="send" onclick="send();">Send money</button>
+            <div id="m"> </div>
+
+    </div>
+    <br>
+
+
+    <div class="form box">
+    <div  class="crypt">Send File</div>
+    <p>File to send: </p>
     <input type="file" id="file" name="file" />
     <br>
+        <label for="searchForReciever">Vyhladajte usera ktoremu poslete file</label>
+        <input type="text" id="searchForReciever">
+        <br>
+        <select name="receivers" id="selectReciever"></select>
+        <br>
     <button type="button" name="encryptB" onclick="encFun();">Encrypt file</button>
 
 <hr>
 
-    <div  class="crypt">Decrypt file</div>
-    <p>File to upload: </p>
-    <input type="file" id="fileD" name="file" />
-    <br>
-    <p>Key: </p>
-    <input type="text" id="key" name="key" />
-    <br>
-    <button type="button" name="decryptB" onclick="decFun();">Decrypt file</button>
+    <div  class="crypt">Massages</div>
+    <button type="button" id="checkMassages">Check Massages</button>
+    <div id="massages"></div>
     <br>
     </div>
     </div>
@@ -49,37 +64,133 @@
    </body>
    <script type="text/javascript">
 
+    document.getElementById("searchForReciever").addEventListener("input", ()=>{
+        let searchString = document.getElementById("searchForReciever").value;
+        let selectReciever = document.getElementById("selectReciever");
+        selectReciever.innerHTML = "";
+        fetch("http://localhost:8082/searchForRecievers/"+searchString, {method: "get"})
+            .then((response)=>response.json())
+            .then((data)=>{
+                data.forEach(user => {selectReciever.add(new Option(user,user))} )
+            })
+
+    })
+
+    document.getElementById("checkMassages").addEventListener("click", ()=>{
+        let loggedInUser = document.getElementById("loggedinUser").innerHTML;
+        let massages = document.getElementById("massages");
+        massages.innerHTML = "";
+        fetch("http://localhost:8082/checkMassages/"+loggedInUser, {method: "get"})
+            .then((response)=>response.json())
+            .then((data)=>{
+                data.forEach(masssage => {
+                    console.log(masssage);
+                    p = document.createElement("p");
+                    p.innerHTML = masssage.fileName;
+                    p.setAttribute("name", masssage.id )
+                    massages.append(p);
+
+                    p.addEventListener("click", ()=>{
+                        let idOfSentFile = p.getAttribute("name");
+                        fetch("http://localhost:8082/recieveFile/"+idOfSentFile, {method: "put"})
+                            .then((res) => {
+                                return res.blob(); })
+                            .then((data) => {
+                                var a = document.createElement("a");
+                                a.href = window.URL.createObjectURL(data);
+                                a.download = "dec_file.txt";
+                                a.click();
+                            });
+
+
+                    })
+
+
+                } )
+            })
+
+
+    })
+
+
    function encFun(){
     const file = document.getElementById("file").files[0];
+    let loggedInUser = document.getElementById("loggedinUser").innerHTML;
+    let reciever = document.getElementById("selectReciever").value;
     let formData = new FormData();
     formData.append("file", file);
+    formData.append("sender", loggedInUser);
+    formData.append("reciever", reciever)
 
-   fetch("http://localhost:8082/encrypt", {method: "post", body: formData })
-  .then((res) => { return res.blob(); })
-  .then((data) => {
-   var a = document.createElement("a");
-   a.href = window.URL.createObjectURL(data);
-   a.download = "file";
-   a.click();
- });
+   fetch("http://localhost:8082/sendFile", {method: "post", body: formData })
+  .then((res) => { return res.text(); })
+  .then((text) => {
+      console.log(text)
+   });
    }
 
    function decFun(){
-     const key = document.getElementById("key").value;
+     const key = document.getElementById("key").files[0];
      const file = document.getElementById("fileD").files[0];
      let formData = new FormData();
      formData.append("file", file);
      formData.append("key", key);
 
-     fetch("http://localhost:8082/decrypt", {method: "post", body: formData })
-     .then((res) => { return res.blob(); })
+     fetch("http://147.175.121.147:8082/decrypt", {method: "post", body: formData })
+     .then((res) => { 
+      
+      return res.blob(); })
      .then((data) => {
      var a = document.createElement("a");
      a.href = window.URL.createObjectURL(data);
-     a.download = "file";
+     a.download = "dec_file.txt";
      a.click();
      });
    }
 
+   function send(){
+       const receiver = document.getElementById("user").value;
+       const amount = document.getElementById("amount").value;
+       let sender = "ivona2";
+       let m = document.getElementById("m");
+
+       let formData = new FormData();
+       formData.append("receiver", receiver);
+       formData.append("sender", sender);
+       formData.append("amount", amount);
+       if(receiver === "" || amount === ""){
+           m.innerHTML = "Field can't be empty!"
+       }
+       else{
+       fetch("http://147.175.121.147:8082/send", {method: "post", body: formData })
+           .then((response) => response.text())
+           .then((text) => {
+             //  m.innerHTML = text;
+           });
+
+   }}
+
+   // The cookie prevents user that is logged in from viewing the page
+   function getCookie() {
+       let name = "loggedIn=";
+       let decodedCookie = decodeURIComponent(document.cookie);
+       let ca = decodedCookie.split(';');
+       for(let i = 0; i <ca.length; i++) {
+           let c = ca[i];
+           while (c.charAt(0) === ' ') {
+               c = c.substring(1);
+           }
+           if (c.indexOf(name) === 0) {
+               return c.substring(name.length, c.length);
+           }
+       }
+       return "";
+   }
+
+   if(getCookie() !== "True"){
+       // Simulate an HTTP redirect:
+       // window.location.href = "./login.html";
+       console.log(getCookie())
+   }
    </script>
 </html>
